@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inside the Enlightenment — Louvre Collection 1650–1775</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Cursor spotlight -->
+  <div id="cursor-glow"></div>
+
+  <!-- Floating dust particles -->
+  <canvas id="dust-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <span class="nav-logo">Musée du Louvre</span>
+      <div class="nav-links">
+        <a href="#entrance">Entrance</a>
+        <a href="#hallway">Gallery</a>
+        <a href="#objects">Objects</a>
+        <a href="#materials">Materials</a>
+        <a href="#data">Data</a>
+        <a href="#conclusion">Conclusion</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 0 — HERO: Outside the Louvre
+  ══════════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-sky"></div>
+      <div class="louvre-facade">
+        <!-- Architectural columns -->
+        <div class="facade-columns">
+          <div class="column"></div><div class="column"></div><div class="column"></div>
+          <div class="column"></div><div class="column"></div><div class="column"></div>
+          <div class="column"></div><div class="column"></div><div class="column"></div>
+        </div>
+        <div class="facade-entablature"></div>
+        <div class="facade-roof-line"></div>
+        <div class="facade-windows">
+          <div class="win"></div><div class="win lit"></div><div class="win"></div>
+          <div class="win lit"></div><div class="win"></div><div class="win lit"></div>
+          <div class="win"></div><div class="win lit"></div><div class="win"></div>
+        </div>
+        <!-- Glass pyramid -->
+        <div class="pyramid-wrap">
+          <div class="pyramid">
+            <div class="pyramid-face front"></div>
+            <div class="pyramid-face left"></div>
+            <div class="pyramid-face right"></div>
+            <div class="pyramid-glow"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-ground"></div>
+      <div class="hero-ground-reflect"></div>
+      <!-- Ambient lights -->
+      <div class="ambient-light left"></div>
+      <div class="ambient-light right"></div>
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-overline">Musée du Louvre · Collection 1650–1775</p>
+      <h1 class="hero-title">
+        <span class="title-line">Inside the</span>
+        <span class="title-line italic">Enlightenment</span>
+      </h1>
+      <p class="hero-subtitle">Exploring object type and material trends<br/>in the Louvre collection, 1650–1775</p>
+      <a href="#entrance" class="cta-btn">
+        <span class="cta-text">Enter the Gallery</span>
+        <span class="cta-arrow">↓</span>
+      </a>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      <span>Scroll to enter</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — Glass Pyramid Entrance
+  ══════════════════════════════════════════ -->
+  <section id="entrance" class="scene-entrance">
+    <div class="entrance-bg">
+      <div class="pyramid-large">
+        <svg viewBox="0 0 600 500" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="pyramidGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#c9a96e;stop-opacity:0.15"/>
+              <stop offset="50%" style="stop-color:#f0e8d0;stop-opacity:0.08"/>
+              <stop offset="100%" style="stop-color:#c9a96e;stop-opacity:0.12"/>
+            </linearGradient>
+            <linearGradient id="gridGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#c9a96e;stop-opacity:0.6"/>
+              <stop offset="100%" style="stop-color:#c9a96e;stop-opacity:0.05"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+          </defs>
+          <!-- Main pyramid silhouette -->
+          <polygon points="300,20 580,480 20,480" fill="url(#pyramidGrad)" stroke="rgba(201,169,110,0.4)" stroke-width="1.5"/>
+          <!-- Grid lines horizontal -->
+          <line x1="160" y1="160" x2="440" y2="160" stroke="url(#gridGrad)" stroke-width="0.8" opacity="0.5"/>
+          <line x1="100" y1="240" x2="500" y2="240" stroke="url(#gridGrad)" stroke-width="0.8" opacity="0.5"/>
+          <line x1="50" y1="330" x2="550" y2="330" stroke="url(#gridGrad)" stroke-width="0.8" opacity="0.4"/>
+          <line x1="20" y1="420" x2="580" y2="420" stroke="url(#gridGrad)" stroke-width="0.8" opacity="0.3"/>
+          <!-- Grid lines diagonal left -->
+          <line x1="300" y1="20" x2="20" y2="480" stroke="rgba(201,169,110,0.2)" stroke-width="0.6"/>
+          <line x1="300" y1="20" x2="160" y2="480" stroke="rgba(201,169,110,0.2)" stroke-width="0.6"/>
+          <line x1="300" y1="20" x2="300" y2="480" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+          <line x1="300" y1="20" x2="440" y2="480" stroke="rgba(201,169,110,0.2)" stroke-width="0.6"/>
+          <!-- Apex glow -->
+          <circle cx="300" cy="20" r="8" fill="rgba(201,169,110,0.8)" filter="url(#glow)"/>
+          <circle cx="300" cy="20" r="20" fill="rgba(201,169,110,0.15)"/>
+        </svg>
+      </div>
+      <div class="entrance-floor"></div>
+      <div class="entrance-glow-beam"></div>
+    </div>
+
+    <div class="entrance-content reveal-on-scroll">
+      <p class="section-label">— The Age of Enlightenment —</p>
+      <h2 class="section-title">A Period of Light,<br/><em>Reason, and Form</em></h2>
+      <div class="entrance-text-block">
+        <p>Between 1650 and 1775, Europe underwent an intellectual revolution. The Age of Enlightenment brought reason to the forefront of thought — reshaping science, philosophy, and the visual arts.</p>
+        <p>The Louvre collection from this era captures this transformation: the objects made, the materials chosen, and the forms crafted tell a story of a civilization in motion.</p>
+        <p>Walk with us through 629 objects. Each one a witness to its age.</p>
+      </div>
+      <div class="entrance-stats">
+        <div class="stat-card reveal-on-scroll" data-delay="100">
+          <span class="stat-num" data-count="629">0</span>
+          <span class="stat-label">Objects in Collection</span>
+        </div>
+        <div class="stat-card reveal-on-scroll" data-delay="200">
+          <span class="stat-num" data-count="125">0</span>
+          <span class="stat-label">Years Documented</span>
+        </div>
+        <div class="stat-card reveal-on-scroll" data-delay="300">
+          <span class="stat-num" data-count="14">0</span>
+          <span class="stat-label">Material Categories</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — Marble Hallway
+  ══════════════════════════════════════════ -->
+  <section id="hallway" class="scene-hallway">
+    <div class="hallway-perspective">
+      <div class="hall-floor"></div>
+      <div class="hall-ceiling"></div>
+      <div class="hall-wall left"></div>
+      <div class="hall-wall right"></div>
+      <div class="hall-vanish-point"></div>
+      <!-- Pilasters -->
+      <div class="pilaster p1 left"></div>
+      <div class="pilaster p2 left"></div>
+      <div class="pilaster p3 left"></div>
+      <div class="pilaster p1 right"></div>
+      <div class="pilaster p2 right"></div>
+      <div class="pilaster p3 right"></div>
+      <!-- Hall lights -->
+      <div class="hall-light l1"></div>
+      <div class="hall-light l2"></div>
+      <div class="hall-light l3"></div>
+    </div>
+
+    <div class="hallway-content">
+      <div class="floating-placard reveal-on-scroll">
+        <div class="placard-border"></div>
+        <p class="placard-overline">Research Question</p>
+        <h2 class="placard-title">How did object types<br/>and materials shift<br/><em>during the beginning of<br/>the Age of Enlightenment?</em></h2>
+        <p class="placard-body">As Europe moved from Baroque grandeur toward Enlightenment rationalism, the Louvre's collection reveals a compelling transition — from heavy religious iconography toward secular portraiture, decorative arts, and scientific instruments. Materials shifted too: from gilded bronze to refined marble, porcelain, and new world materials.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — Object Type Gallery Wall
+  ══════════════════════════════════════════ -->
+  <section id="objects" class="scene-gallery">
+    <div class="gallery-bg">
+      <div class="wainscot"></div>
+      <div class="picture-rail"></div>
+    </div>
+
+    <div class="gallery-header reveal-on-scroll">
+      <p class="section-label">— Gallery I —</p>
+      <h2 class="section-title">The Collection<br/><em>by Object Type</em></h2>
+      <p class="section-intro">629 objects classified across sculpture, decorative arts, and beyond. Each form carries a statement about what the Enlightenment valued.</p>
+    </div>
+
+    <div class="object-wall">
+      <!-- Large framed items -->
+      <div class="frame-item large reveal-on-scroll" data-delay="0" style="--accent:#c9a96e">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">🏛</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="91.2" style="--bar-color:#c9a96e"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Statuette</span>
+          <span class="label-count">115 objects</span>
+          <span class="label-pct">18.3%</span>
+        </div>
+      </div>
+
+      <div class="frame-item large reveal-on-scroll" data-delay="80" style="--accent:#b8956a">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">🗿</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="74.6" style="--bar-color:#b8956a"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Statue</span>
+          <span class="label-count">94 objects</span>
+          <span class="label-pct">14.9%</span>
+        </div>
+      </div>
+
+      <div class="frame-item medium reveal-on-scroll" data-delay="160" style="--accent:#a07850">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">👤</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="66.7" style="--bar-color:#a07850"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Buste</span>
+          <span class="label-count">84 objects</span>
+          <span class="label-pct">13.4%</span>
+        </div>
+      </div>
+
+      <div class="frame-item medium reveal-on-scroll" data-delay="240" style="--accent:#8a6540">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">👥</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="50" style="--bar-color:#8a6540"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Groupe</span>
+          <span class="label-count">63 objects</span>
+          <span class="label-pct">10.0%</span>
+        </div>
+      </div>
+
+      <div class="frame-item small reveal-on-scroll" data-delay="320" style="--accent:#c9a96e">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">⬜</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="42.9" style="--bar-color:#c9a96e"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Bas-relief</span>
+          <span class="label-count">54 objects</span>
+          <span class="label-pct">8.6%</span>
+        </div>
+      </div>
+
+      <div class="frame-item small reveal-on-scroll" data-delay="400" style="--accent:#b8956a">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">🏺</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="21.4" style="--bar-color:#b8956a"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Vase</span>
+          <span class="label-count">27 objects</span>
+          <span class="label-pct">4.3%</span>
+        </div>
+      </div>
+
+      <div class="frame-item small reveal-on-scroll" data-delay="480" style="--accent:#a07850">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">🔘</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="19" style="--bar-color:#a07850"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Médaillon</span>
+          <span class="label-count">24 objects</span>
+          <span class="label-pct">3.8%</span>
+        </div>
+      </div>
+
+      <div class="frame-item small reveal-on-scroll" data-delay="560" style="--accent:#8a6540">
+        <div class="frame-outer">
+          <div class="frame-inner">
+            <div class="artwork-display">
+              <div class="artwork-icon">🔲</div>
+              <div class="artwork-bar-wrap">
+                <div class="artwork-bar" data-width="14" style="--bar-color:#8a6540"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-label">
+          <span class="label-title">Haut-relief</span>
+          <span class="label-count">8 objects</span>
+          <span class="label-pct">1.3%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-insight reveal-on-scroll">
+      <div class="insight-glass">
+        <p class="insight-text">Sculptural forms dominate the collection — statuettes, statues, and busts together account for nearly <strong>47% of all objects</strong>. This reflects the Enlightenment's continued reverence for classical form, even as it embraced new secular subjects.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — Material Room
+  ══════════════════════════════════════════ -->
+  <section id="materials" class="scene-materials">
+    <div class="materials-bg">
+      <div class="material-floor"></div>
+    </div>
+
+    <div class="materials-header reveal-on-scroll">
+      <p class="section-label">— Gallery II —</p>
+      <h2 class="section-title">The Language<br/><em>of Materials</em></h2>
+      <p class="section-intro">Every material was a choice — a statement about permanence, luxury, and cultural value. The Enlightenment had its own material vocabulary.</p>
+    </div>
+
+    <div class="material-grid">
+      <div class="material-card reveal-on-scroll" data-delay="0" style="--mat-color:#e8e0d5;--mat-text:#2a2520">
+        <div class="mat-texture marble-tex"></div>
+        <div class="mat-content">
+          <div class="mat-icon-wrap"><span class="mat-icon">⬜</span></div>
+          <h3 class="mat-name">Marble</h3>
+          <div class="mat-bar-container">
+            <div class="mat-bar-fill" data-width="100" style="background:linear-gradient(90deg,#c9a96e,#e8e0d5)"></div>
+          </div>
+          <div class="mat-stats">
+            <span class="mat-count">315</span>
+            <span class="mat-pct">50.1%</span>
+          </div>
+          <p class="mat-desc">The classical material. Marble dominated Enlightenment sculpture — its cool white surface evoking ancient Greece and Rome.</p>
+        </div>
+        <div class="mat-placard">Salle Richelieu</div>
+      </div>
+
+      <div class="material-card reveal-on-scroll" data-delay="100" style="--mat-color:#8B6914;--mat-text:#f5e6c8">
+        <div class="mat-texture bronze-tex"></div>
+        <div class="mat-content">
+          <div class="mat-icon-wrap"><span class="mat-icon">🔶</span></div>
+          <h3 class="mat-name">Bronze</h3>
+          <div class="mat-bar-container">
+            <div class="mat-bar-fill" data-width="29.2" style="background:linear-gradient(90deg,#c9a96e,#8B6914)"></div>
+          </div>
+          <div class="mat-stats">
+            <span class="mat-count">92</span>
+            <span class="mat-pct">14.6%</span>
+          </div>
+          <p class="mat-desc">Cast in fire and form. Bronze carried weight — ceremonial, commemorative, permanent. A material for legacy.</p>
+        </div>
+        <div class="mat-placard">Salle Denon</div>
+      </div>
+
+      <div class="material-card reveal-on-scroll" data-delay="200" style="--mat-color:#c17f5a;--mat-text:#f5e6c8">
+        <div class="mat-texture terra-tex"></div>
+        <div class="mat-content">
+          <div class="mat-icon-wrap"><span class="mat-icon">🟤</span></div>
+          <h3 class="mat-name">Terracotta</h3>
+          <div class="mat-bar-container">
+            <div class="mat-bar-fill" data-width="25.4" style="background:linear-gradient(90deg,#c9a96e,#c17f5a)"></div>
+          </div>
+          <div class="mat-stats">
+            <span class="mat-count">80</span>
+            <span class="mat-pct">12.7%</span>
+          </div>
+          <p class="mat-desc">Earth fired into art. Terracotta was the medium of intimacy — bozzetti, models, personal portraits — the Enlightenment's informal register.</p>
+        </div>
+        <div class="mat-placard">Salle Sully</div>
+      </div>
+
+      <div class="material-card reveal-on-scroll" data-delay="300" style="--mat-color:#7a7a7a;--mat-text:#f5e6c8">
+        <div class="mat-texture stone-tex"></div>
+        <div class="mat-content">
+          <div class="mat-icon-wrap"><span class="mat-icon">⬛</span></div>
+          <h3 class="mat-name">Stone</h3>
+          <div class="mat-bar-container">
+            <div class="mat-bar-fill" data-width="9.2" style="background:linear-gradient(90deg,#c9a96e,#7a7a7a)"></div>
+          </div>
+          <div class="mat-stats">
+            <span class="mat-count">29</span>
+            <span class="mat-pct">4.6%</span>
+          </div>
+          <p class="mat-desc">Raw, grounded, architectural. Stone connected Enlightenment monuments to ancient precedents.</p>
+        </div>
+        <div class="mat-placard">Sully Wing</div>
+      </div>
+
+      <div class="material-card reveal-on-scroll" data-delay="400" style="--mat-color:#d4e8f0;--mat-text:#1a3040">
+        <div class="mat-texture porcelain-tex"></div>
+        <div class="mat-content">
+          <div class="mat-icon-wrap"><span class="mat-icon">🔵</span></div>
+          <h3 class="mat-name">Porcelain</h3>
+          <div class="mat-bar-container">
+            <div class="mat-bar-fill" data-width="8.3" style="background:linear-gradient(90deg,#c9a96e,#d4e8f0)"></div>
+          </div>
+          <div class="mat-stats">
+            <span class="mat-count">26</span>
+            <span class="mat-pct">4.1%</span>
+          </div>
+          <p class="mat-desc">The new world's gift. Porcelain arrived from Asia and captivated Europe — a material of refinement, chinoiserie, and global exchange.</p>
+        </div>
+        <div class="mat-placard">Decorative Arts</div>
+      </div>
+
+      <div class="material-card reveal-on-scroll" data-delay="500" style="--mat-color:#8B5A2B;--mat-text:#f5e6c8">
+        <div class="mat-texture wood-tex"></div>
+        <div class="mat-content">
+          <div class="mat-icon-wrap"><span class="mat-icon">🪵</span></div>
+          <h3 class="mat-name">Wood</h3>
+          <div class="mat-bar-container">
+            <div class="mat-bar-fill" data-width="7.9" style="background:linear-gradient(90deg,#c9a96e,#8B5A2B)"></div>
+          </div>
+          <div class="mat-stats">
+            <span class="mat-count">25</span>
+            <span class="mat-pct">4.0%</span>
+          </div>
+          <p class="mat-desc">Warm and functional. Wood bridged fine art and decorative craftsmanship — furniture, frames, small devotional objects.</p>
+        </div>
+        <div class="mat-placard">Furniture Wing</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 5 — Data Visualization Room
+  ══════════════════════════════════════════ -->
+  <section id="data" class="scene-data">
+    <div class="data-room-bg">
+      <div class="data-wall-left"></div>
+      <div class="data-wall-right"></div>
+      <div class="data-floor"></div>
+    </div>
+
+    <div class="data-header reveal-on-scroll">
+      <p class="section-label">— The Archive Room —</p>
+      <h2 class="section-title">The Data<br/><em>as Exhibit</em></h2>
+      <p class="section-intro">Every chart is a window into production. Every bar, a decade of human making.</p>
+    </div>
+
+    <!-- Exhibit 1: Timeline -->
+    <div class="exhibit-frame reveal-on-scroll">
+      <div class="exhibit-glass">
+        <div class="exhibit-header-bar">
+          <span class="exhibit-num">I</span>
+          <span class="exhibit-title">Objects by Decade, 1650–1775</span>
+          <span class="exhibit-medium">Louvre Collection Data</span>
+        </div>
+        <div class="chart-area" id="timeline-chart">
+          <div class="chart-y-axis">
+            <span>110</span><span>90</span><span>70</span><span>50</span><span>30</span><span>10</span>
+          </div>
+          <div class="chart-bars" id="decade-bars">
+            <!-- Bars injected by JS -->
+          </div>
+          <div class="chart-x-axis" id="decade-labels">
+            <!-- Labels injected by JS -->
+          </div>
+        </div>
+        <div class="exhibit-caption">The 1680s represent the most prolific decade — coinciding with Louis XIV's expansion of the Louvre and the court at Versailles.</div>
+      </div>
+      <div class="exhibit-number-tag">EXH. 01</div>
+    </div>
+
+    <!-- Exhibit 2: Material breakdown donut -->
+    <div class="exhibit-frame reveal-on-scroll">
+      <div class="exhibit-glass">
+        <div class="exhibit-header-bar">
+          <span class="exhibit-num">II</span>
+          <span class="exhibit-title">Material Distribution</span>
+          <span class="exhibit-medium">629 Objects Analyzed</span>
+        </div>
+        <div class="donut-area">
+          <div class="donut-chart-wrap">
+            <canvas id="donut-canvas" width="260" height="260"></canvas>
+            <div class="donut-center">
+              <span class="donut-center-num">629</span>
+              <span class="donut-center-label">Objects</span>
+            </div>
+          </div>
+          <div class="donut-legend" id="donut-legend">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+        <div class="exhibit-caption">Marble's overwhelming presence (50.1%) reflects the neoclassical revival that ran alongside — and through — the Enlightenment.</div>
+      </div>
+      <div class="exhibit-number-tag">EXH. 02</div>
+    </div>
+
+    <!-- Exhibit 3: Material over time line chart -->
+    <div class="exhibit-frame reveal-on-scroll">
+      <div class="exhibit-glass">
+        <div class="exhibit-header-bar">
+          <span class="exhibit-num">III</span>
+          <span class="exhibit-title">Material Trends Over Time</span>
+          <span class="exhibit-medium">Marble vs. Bronze vs. Terracotta</span>
+        </div>
+        <div class="line-chart-area">
+          <canvas id="line-canvas" width="680" height="300"></canvas>
+        </div>
+        <div class="line-legend">
+          <span class="line-legend-item" style="--lc:#e8e0d5">⬜ Marble</span>
+          <span class="line-legend-item" style="--lc:#c9a96e">🔶 Bronze</span>
+          <span class="line-legend-item" style="--lc:#c17f5a">🟤 Terracotta</span>
+        </div>
+        <div class="exhibit-caption">Marble production spiked in the 1680s–1700s then stabilized, while terracotta saw a late-century surge — suggesting an intimacy trend in Enlightenment portraiture.</div>
+      </div>
+      <div class="exhibit-number-tag">EXH. 03</div>
+    </div>
+
+    <!-- Timeline scroll bar -->
+    <div class="timeline-scroll-wrap reveal-on-scroll">
+      <div class="timeline-bar-container">
+        <div class="timeline-line" id="timeline-line"></div>
+        <div class="timeline-markers">
+          <div class="tl-mark" style="left:0%"><span class="tl-year">1650</span><span class="tl-event">Start of Age of Enlightenment</span></div>
+          <div class="tl-mark" style="left:24%"><span class="tl-year">1680</span><span class="tl-event">Peak Louvre production under Louis XIV</span></div>
+          <div class="tl-mark" style="left:40%"><span class="tl-year">1700</span><span class="tl-event">Neoclassicism emerges in sculpture</span></div>
+          <div class="tl-mark" style="left:60%"><span class="tl-year">1730</span><span class="tl-event">Rococo period — decorative arts flourish</span></div>
+          <div class="tl-mark" style="left:80%"><span class="tl-year">1760</span><span class="tl-event">Late Enlightenment — secular portraiture rises</span></div>
+          <div class="tl-mark" style="left:100%"><span class="tl-year">1775</span><span class="tl-event">End of study period</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 6 — Grand Gallery Conclusion
+  ══════════════════════════════════════════ -->
+  <section id="conclusion" class="scene-conclusion">
+    <div class="grand-gallery-bg">
+      <div class="grand-arch left"></div>
+      <div class="grand-arch right"></div>
+      <div class="grand-floor"></div>
+      <div class="grand-ceiling"></div>
+      <div class="grand-light-beam l1"></div>
+      <div class="grand-light-beam l2"></div>
+      <div class="grand-light-beam l3"></div>
+      <!-- Decorative arch top -->
+      <div class="grand-arch-top"></div>
+    </div>
+
+    <div class="conclusion-content">
+      <div class="grand-reveal reveal-on-scroll">
+        <p class="section-label">— The Grand Gallery —</p>
+        <h2 class="conclusion-title">
+          <em>"By walking through</em><br/>
+          <span>the Louvre collection,</span>
+          <em>we can see how</em><br/>
+          <span>Enlightenment-era artistic production</span><br/>
+          <em>reflected changing materials,</em><br/>
+          <span>cultural priorities,</span><br/>
+          <em>and object forms."</em>
+        </h2>
+      </div>
+
+      <div class="key-findings reveal-on-scroll">
+        <h3 class="findings-title">Key Findings</h3>
+        <div class="findings-grid">
+          <div class="finding-card reveal-on-scroll" data-delay="0">
+            <div class="finding-num">01</div>
+            <h4>Marble Dominated</h4>
+            <p>Over half of all objects were marble — a classical material that embodied Enlightenment ideals of reason, clarity, and ancient precedent.</p>
+          </div>
+          <div class="finding-card reveal-on-scroll" data-delay="150">
+            <div class="finding-num">02</div>
+            <h4>Sculpture Prevailed</h4>
+            <p>Statuettes, statues, and busts comprised nearly half the collection — demonstrating the era's investment in figural representation and portraiture.</p>
+          </div>
+          <div class="finding-card reveal-on-scroll" data-delay="300">
+            <div class="finding-num">03</div>
+            <h4>The 1680s Peak</h4>
+            <p>Production surged under Louis XIV's patronage — a political use of art that the Enlightenment would later question and transform.</p>
+          </div>
+          <div class="finding-card reveal-on-scroll" data-delay="450">
+            <div class="finding-num">04</div>
+            <h4>Late Intimacy</h4>
+            <p>Terracotta rose in the late period, suggesting a shift toward more private, personal, and experimental artistic forms as the Enlightenment matured.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="conclusion-footer reveal-on-scroll">
+        <div class="footer-gold-line"></div>
+        <p class="footer-credit">Art History Research · Louvre Collection Data 1650–1775</p>
+        <p class="footer-credit">629 Objects · 14 Material Categories · 125 Years</p>
+        <div class="footer-gold-line"></div>
+        <div class="footer-louvre-seal">
+          <div class="seal-ring">
+            <span class="seal-text">MUSÉE DU LOUVRE · AGE OF ENLIGHTENMENT · MCML</span>
+          </div>
+          <div class="seal-inner">L</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
