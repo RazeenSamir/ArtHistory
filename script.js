@@ -134,81 +134,127 @@ const barObserver = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.frame-item, .material-card').forEach(el => barObserver.observe(el));
 
-// ── Decade bar chart ──────────────────────────
-const decadeData = [
-  { decade: '1650s', count: 17 },
-  { decade: '1660s', count: 50 },
-  { decade: '1670s', count: 53 },
-  { decade: '1680s', count: 110 },
-  { decade: '1690s', count: 50 },
-  { decade: '1700s', count: 95 },
-  { decade: '1710s', count: 30 },
-  { decade: '1720s', count: 9  },
-  { decade: '1730s', count: 22 },
-  { decade: '1740s', count: 33 },
-  { decade: '1750s', count: 50 },
-  { decade: '1760s', count: 71 },
-  { decade: '1770s', count: 38 },
-];
+// ── Object Type Line Chart ────────────────────
+const objTypeCanvas = document.getElementById('obj-type-canvas');
 
-const maxCount = Math.max(...decadeData.map(d => d.count));
-const barsContainer = document.getElementById('decade-bars');
-const labelsContainer = document.getElementById('decade-labels');
+const objectTypeData = {
+  intervals: ['1650','1660','1670','1680','1690','1700','1710','1720','1730','1740','1750','1760','1770'],
+  series: [
+    { name: 'Statuette',      data: [7,  2,  6, 11,  8, 14,  6, 2, 3, 18, 17, 33, 9],  color: '#c9a96e' },
+    { name: 'Sculpture',      data: [2, 16, 12, 25,  9, 17, 10, 2, 5,  2, 12,  4, 1],  color: '#e8e0d5' },
+    { name: 'Bust',           data: [2,  1, 14,  8,  8, 14,  2, 0, 5,  4,  9, 13, 11], color: '#c17f5a' },
+    { name: 'Sculpted Group', data: [1,  2,  5,  5,  1, 15,  2, 1, 1,  4,  8,  8, 9],  color: '#9ab5c4' },
+    { name: 'Bas-relief',     data: [2, 18,  5,  8, 11,  8,  0, 0, 2,  3,  1,  0, 4],  color: '#8fad91' },
+  ]
+};
 
-if (barsContainer) {
-  decadeData.forEach((d, i) => {
-    const group = document.createElement('div');
-    group.className = 'decade-bar-group';
-    const heightPct = (d.count / maxCount) * 185;
-    const bar = document.createElement('div');
-    bar.className = 'decade-bar';
-    bar.dataset.count = d.count;
-    bar.dataset.targetH = heightPct;
-    bar.style.height = '0px';
-    // Highlight peak
-    if (d.count === maxCount) {
-      bar.style.background = 'linear-gradient(180deg, #f0d090 0%, #c9a96e 100%)';
-      bar.style.boxShadow = '0 0 20px rgba(201,169,110,0.4)';
-    }
-    group.appendChild(bar);
-    barsContainer.appendChild(group);
-
-    const label = document.createElement('span');
-    label.className = 'x-label';
-    label.textContent = d.decade.replace('s','');
-    if (labelsContainer) labelsContainer.appendChild(label);
+const objTypeLegendEl = document.getElementById('obj-type-legend');
+if (objTypeLegendEl) {
+  objectTypeData.series.forEach(s => {
+    const item = document.createElement('span');
+    item.className = 'obj-type-legend-item';
+    item.style.setProperty('--legend-color', s.color);
+    item.textContent = s.name;
+    objTypeLegendEl.appendChild(item);
   });
 }
 
-// Animate bars when in view
-const chartObserver = new IntersectionObserver(entries => {
+function drawObjTypeChart(progress) {
+  if (!objTypeCanvas) return;
+  const oc = objTypeCanvas.getContext('2d');
+  const W = objTypeCanvas.width, H = objTypeCanvas.height;
+  const pad = { top: 20, right: 20, bottom: 40, left: 44 };
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top - pad.bottom;
+
+  oc.clearRect(0, 0, W, H);
+
+  const maxVal = 35;
+  const pts = objectTypeData.intervals.length;
+  const xStep = chartW / (pts - 1);
+
+  function toX(i) { return pad.left + i * xStep; }
+  function toY(v) { return pad.top + chartH - (v / maxVal) * chartH; }
+
+  // Grid lines
+  oc.strokeStyle = 'rgba(201,169,110,0.07)';
+  oc.lineWidth = 1;
+  for (let v = 0; v <= maxVal; v += 7) {
+    const y = toY(v);
+    oc.beginPath(); oc.moveTo(pad.left, y); oc.lineTo(W - pad.right, y); oc.stroke();
+    oc.fillStyle = 'rgba(201,169,110,0.35)';
+    oc.font = '10px Inter, sans-serif';
+    oc.textAlign = 'right';
+    oc.fillText(v, pad.left - 6, y + 4);
+  }
+
+  // X-axis labels
+  oc.fillStyle = 'rgba(201,169,110,0.4)';
+  oc.font = '9px Inter, sans-serif';
+  oc.textAlign = 'center';
+  objectTypeData.intervals.forEach((d, i) => {
+    oc.fillText(d, toX(i), H - pad.bottom + 16);
+  });
+
+  // Draw each series
+  objectTypeData.series.forEach(s => {
+    const totalPts = Math.floor(pts * progress);
+    if (totalPts < 2) return;
+
+    oc.beginPath();
+    oc.moveTo(toX(0), toY(s.data[0]));
+    for (let i = 1; i < totalPts; i++) {
+      const xc = (toX(i - 1) + toX(i)) / 2;
+      const yc = (toY(s.data[i - 1]) + toY(s.data[i])) / 2;
+      oc.quadraticCurveTo(toX(i - 1), toY(s.data[i - 1]), xc, yc);
+    }
+    oc.strokeStyle = s.color;
+    oc.lineWidth = 2.2;
+    oc.globalAlpha = 0.9;
+    oc.stroke();
+    oc.globalAlpha = 1;
+
+    for (let i = 0; i < totalPts; i++) {
+      oc.beginPath();
+      oc.arc(toX(i), toY(s.data[i]), 3, 0, Math.PI * 2);
+      oc.fillStyle = s.color;
+      oc.fill();
+    }
+  });
+}
+
+let objTypeAnimated = false;
+const objTypeObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      document.querySelectorAll('.decade-bar').forEach((bar, i) => {
-        const h = parseFloat(bar.dataset.targetH);
-        setTimeout(() => { bar.style.height = h + 'px'; }, i * 60);
-      });
-      chartObserver.unobserve(entry.target);
+    if (entry.isIntersecting && !objTypeAnimated) {
+      objTypeAnimated = true;
+      const dur = 1800;
+      const start = performance.now();
+      function anim(now) {
+        const prog = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - prog, 2);
+        drawObjTypeChart(eased);
+        if (prog < 1) requestAnimationFrame(anim);
+      }
+      requestAnimationFrame(anim);
+      objTypeObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0.3 });
 
-const decadeChart = document.getElementById('timeline-chart');
-if (decadeChart) chartObserver.observe(decadeChart);
+if (objTypeCanvas) objTypeObserver.observe(objTypeCanvas);
 
 // ── Donut Chart ───────────────────────────────
 const donutCanvas = document.getElementById('donut-canvas');
 const legendEl = document.getElementById('donut-legend');
 
 const materialData = [
-  { name: 'Marble',     count: 315, color: '#e8e0d5' },
-  { name: 'Bronze',     count: 92,  color: '#c9a96e' },
-  { name: 'Terracotta', count: 80,  color: '#c17f5a' },
-  { name: 'Stone',      count: 29,  color: '#8a8a8a' },
+  { name: 'Marble',     count: 303, color: '#e8e0d5' },
+  { name: 'Other',      count: 83,  color: '#4a4238' },
+  { name: 'Bronze',     count: 84,  color: '#c9a96e' },
+  { name: 'Terracotta', count: 79,  color: '#c17f5a' },
   { name: 'Porcelain',  count: 26,  color: '#d4e8f0' },
   { name: 'Wood',       count: 25,  color: '#8B5A2B' },
-  { name: 'Ivory',      count: 13,  color: '#f5f0e0' },
-  { name: 'Other',      count: 49,  color: '#3a3028' },
 ];
 const totalMat = materialData.reduce((s, d) => s + d.count, 0);
 
@@ -296,13 +342,28 @@ if (donutCanvas) donutObserver.observe(donutCanvas);
 // ── Line Chart (Material Trends) ──────────────
 const lineCanvas = document.getElementById('line-canvas');
 
-// Per-decade breakdown: marble / bronze / terracotta
 const lineData = {
-  decades: ['1650','1660','1670','1680','1690','1700','1710','1720','1730','1740','1750','1760','1770'],
-  marble:     [12, 35, 38, 75, 32, 62, 18, 6,  14, 20, 32, 45, 22],
-  bronze:     [3,  8,  9,  20, 10, 18, 7,  2,  5,  8,  12, 16, 8 ],
-  terracotta: [1,  5,  4,  10, 6,  12, 3,  1,  2,  4,  5,  8,  14],
+  intervals: ['1650','1660','1670','1680','1690','1700','1710','1720','1730','1740','1750','1760','1770'],
+  series: [
+    { name: 'Marble',     data: [9,  28, 31, 45, 23, 60, 19, 1,  12, 13, 23, 23, 16], color: '#e8e0d5' },
+    { name: 'Bronze',     data: [5,  2,  5,  40, 8,  9,  1,  2,  0,  3,  4,  2,  3 ], color: '#c9a96e' },
+    { name: 'Terracotta', data: [0,  3,  6,  2,  7,  5,  3,  2,  7,  8,  7,  21, 8 ], color: '#c17f5a' },
+    { name: 'Porcelain',  data: [0,  0,  0,  0,  0,  0,  0,  0,  1,  6,  5,  10, 4 ], color: '#d4e8f0' },
+    { name: 'Wood',       data: [1,  1,  0,  3,  1,  4,  0,  0,  1,  2,  3,  5,  4 ], color: '#a07850' },
+  ]
 };
+
+// Build line legend dynamically
+const lineLegendEl = document.getElementById('line-legend');
+if (lineLegendEl) {
+  lineData.series.forEach(s => {
+    const item = document.createElement('span');
+    item.className = 'obj-type-legend-item';
+    item.style.setProperty('--legend-color', s.color);
+    item.textContent = s.name;
+    lineLegendEl.appendChild(item);
+  });
+}
 
 function drawLineChart(progress) {
   if (!lineCanvas) return;
@@ -314,8 +375,8 @@ function drawLineChart(progress) {
 
   lc.clearRect(0, 0, W, H);
 
-  const maxVal = 80;
-  const pts = lineData.decades.length;
+  const maxVal = 65;
+  const pts = lineData.intervals.length;
   const xStep = chartW / (pts - 1);
 
   function toX(i) { return pad.left + i * xStep; }
@@ -324,7 +385,7 @@ function drawLineChart(progress) {
   // Grid
   lc.strokeStyle = 'rgba(201,169,110,0.07)';
   lc.lineWidth = 1;
-  for (let v = 0; v <= maxVal; v += 20) {
+  for (let v = 0; v <= maxVal; v += 13) {
     const y = toY(v);
     lc.beginPath(); lc.moveTo(pad.left, y); lc.lineTo(W - pad.right, y); lc.stroke();
     lc.fillStyle = 'rgba(201,169,110,0.35)';
@@ -337,56 +398,54 @@ function drawLineChart(progress) {
   lc.fillStyle = 'rgba(201,169,110,0.4)';
   lc.font = '9px Inter, sans-serif';
   lc.textAlign = 'center';
-  lineData.decades.forEach((d, i) => {
+  lineData.intervals.forEach((d, i) => {
     lc.fillText(d, toX(i), H - pad.bottom + 16);
   });
 
-  const drawLine = (series, color, alpha) => {
+  const drawSeries = (data, color) => {
     const totalPts = Math.floor(pts * progress);
     if (totalPts < 2) return;
 
     lc.beginPath();
-    lc.moveTo(toX(0), toY(series[0]));
+    lc.moveTo(toX(0), toY(data[0]));
     for (let i = 1; i < totalPts; i++) {
       const xc = (toX(i - 1) + toX(i)) / 2;
-      const yc = (toY(series[i - 1]) + toY(series[i])) / 2;
-      lc.quadraticCurveTo(toX(i - 1), toY(series[i - 1]), xc, yc);
+      const yc = (toY(data[i - 1]) + toY(data[i])) / 2;
+      lc.quadraticCurveTo(toX(i - 1), toY(data[i - 1]), xc, yc);
     }
     lc.strokeStyle = color;
-    lc.lineWidth = 2.5;
-    lc.globalAlpha = alpha;
+    lc.lineWidth = 2.2;
+    lc.globalAlpha = 0.9;
     lc.stroke();
     lc.globalAlpha = 1;
 
-    // Dots
     for (let i = 0; i < totalPts; i++) {
       lc.beginPath();
-      lc.arc(toX(i), toY(series[i]), 3.5, 0, Math.PI * 2);
+      lc.arc(toX(i), toY(data[i]), 3, 0, Math.PI * 2);
       lc.fillStyle = color;
       lc.fill();
     }
   };
 
-  drawLine(lineData.marble,     '#e8e0d5', 0.9);
-  drawLine(lineData.bronze,     '#c9a96e', 0.9);
-  drawLine(lineData.terracotta, '#c17f5a', 0.9);
+  lineData.series.forEach(s => drawSeries(s.data, s.color));
 
-  // Area fill marble
+  // Subtle area fill under marble
   const totalPts = Math.floor(pts * progress);
+  const marbleData = lineData.series[0].data;
   if (totalPts >= 2) {
     lc.beginPath();
-    lc.moveTo(toX(0), toY(lineData.marble[0]));
+    lc.moveTo(toX(0), toY(marbleData[0]));
     for (let i = 1; i < totalPts; i++) {
       const xc = (toX(i - 1) + toX(i)) / 2;
-      const yc = (toY(lineData.marble[i - 1]) + toY(lineData.marble[i])) / 2;
-      lc.quadraticCurveTo(toX(i - 1), toY(lineData.marble[i - 1]), xc, yc);
+      const yc = (toY(marbleData[i - 1]) + toY(marbleData[i])) / 2;
+      lc.quadraticCurveTo(toX(i - 1), toY(marbleData[i - 1]), xc, yc);
     }
     lc.lineTo(toX(totalPts - 1), toY(0));
     lc.lineTo(toX(0), toY(0));
     lc.closePath();
     const grad = lc.createLinearGradient(0, pad.top, 0, H - pad.bottom);
-    grad.addColorStop(0,   'rgba(232,224,213,0.12)');
-    grad.addColorStop(1,   'rgba(232,224,213,0)');
+    grad.addColorStop(0, 'rgba(232,224,213,0.10)');
+    grad.addColorStop(1, 'rgba(232,224,213,0)');
     lc.fillStyle = grad;
     lc.fill();
   }
@@ -491,7 +550,7 @@ const entranceObserver = new IntersectionObserver(entries => {
 const entranceSection = document.getElementById('entrance');
 if (entranceSection) entranceObserver.observe(entranceSection);
 
-// ── Resize line canvas ────────────────────────
+// ── Resize canvases ───────────────────────────
 function resizeLineCanvas() {
   if (!lineCanvas) return;
   const parent = lineCanvas.parentElement;
@@ -500,9 +559,21 @@ function resizeLineCanvas() {
     if (lineAnimated) drawLineChart(1);
   }
 }
-window.addEventListener('resize', resizeLineCanvas);
-resizeLineCanvas();
 
-// ── Initial draw for line chart (placeholder) ─
+function resizeObjTypeCanvas() {
+  if (!objTypeCanvas) return;
+  const parent = objTypeCanvas.parentElement;
+  if (parent) {
+    objTypeCanvas.width = parent.offsetWidth;
+    if (objTypeAnimated) drawObjTypeChart(1);
+    else drawObjTypeChart(0);
+  }
+}
+
+window.addEventListener('resize', () => { resizeLineCanvas(); resizeObjTypeCanvas(); });
+resizeLineCanvas();
+resizeObjTypeCanvas();
+
+// ── Initial draw (placeholder state) ─────────
 drawLineChart(0);
 drawDonut(0);
