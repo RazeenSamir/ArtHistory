@@ -244,49 +244,82 @@ const objTypeObserver = new IntersectionObserver(entries => {
 
 if (objTypeCanvas) objTypeObserver.observe(objTypeCanvas);
 
-// ── Donut Chart ───────────────────────────────
-const donutCanvas = document.getElementById('donut-canvas');
-const legendEl = document.getElementById('donut-legend');
+// ── Material Donut Charts by Period ───────────
+const materialColors = {
+  Marble: '#e8e0d5',
+  Bronze: '#c9a96e',
+  Terracotta: '#c17f5a',
+  Porcelain: '#d4e8f0',
+  Wood: '#8B5A2B',
+};
 
-const materialData = [
-  { name: 'Marble',     count: 303, color: '#e8e0d5' },
-  { name: 'Other',      count: 83,  color: '#4a4238' },
-  { name: 'Bronze',     count: 84,  color: '#c9a96e' },
-  { name: 'Terracotta', count: 79,  color: '#c17f5a' },
-  { name: 'Porcelain',  count: 26,  color: '#d4e8f0' },
-  { name: 'Wood',       count: 25,  color: '#8B5A2B' },
+const periodMaterialData = [
+  {
+    canvasId: 'pre-donut-canvas',
+    legendId: 'pre-donut-legend',
+    data: [
+      { name: 'Marble', count: 113 },
+      { name: 'Bronze', count: 52 },
+      { name: 'Terracotta', count: 11 },
+      { name: 'Porcelain', count: 0 },
+      { name: 'Wood', count: 5 },
+    ],
+  },
+  {
+    canvasId: 'early-donut-canvas',
+    legendId: 'early-donut-legend',
+    data: [
+      { name: 'Marble', count: 103 },
+      { name: 'Bronze', count: 20 },
+      { name: 'Terracotta', count: 17 },
+      { name: 'Porcelain', count: 0 },
+      { name: 'Wood', count: 5 },
+    ],
+  },
+  {
+    canvasId: 'late-donut-canvas',
+    legendId: 'late-donut-legend',
+    data: [
+      { name: 'Marble', count: 87 },
+      { name: 'Bronze', count: 12 },
+      { name: 'Terracotta', count: 51 },
+      { name: 'Porcelain', count: 26 },
+      { name: 'Wood', count: 15 },
+    ],
+  },
 ];
-const totalMat = materialData.reduce((s, d) => s + d.count, 0);
 
-// Build legend
-if (legendEl) {
-  materialData.forEach(d => {
+function buildMaterialLegend(legend, data, total) {
+  if (!legend) return;
+  data.forEach(d => {
     const item = document.createElement('div');
     item.className = 'legend-item';
     item.innerHTML = `
-      <span class="legend-dot" style="background:${d.color}"></span>
+      <span class="legend-dot" style="background:${materialColors[d.name]}"></span>
       <span class="legend-label">${d.name}</span>
-      <span class="legend-pct">${((d.count / totalMat) * 100).toFixed(1)}%</span>`;
-    legendEl.appendChild(item);
+      <span class="legend-count">${d.count}</span>
+      <span class="legend-pct">${((d.count / total) * 100).toFixed(1)}%</span>`;
+    legend.appendChild(item);
   });
 }
 
-function drawDonut(progress) {
-  if (!donutCanvas) return;
-  const dc = donutCanvas.getContext('2d');
+function drawDonut(canvas, data, total, progress) {
+  if (!canvas) return;
+  const dc = canvas.getContext('2d');
   const cx = 130, cy = 130, outerR = 120, innerR = 75;
   dc.clearRect(0, 0, 260, 260);
 
   let startAngle = -Math.PI / 2;
   const totalAngle = Math.PI * 2 * progress;
 
-  materialData.forEach((d, i) => {
-    const slice = (d.count / totalMat) * totalAngle;
+  data.forEach(d => {
+    if (d.count === 0) return;
+    const slice = (d.count / total) * totalAngle;
     dc.beginPath();
     dc.moveTo(cx, cy);
     dc.arc(cx, cy, outerR, startAngle, startAngle + slice);
     dc.closePath();
-    dc.fillStyle = d.color;
+    dc.fillStyle = materialColors[d.name];
     dc.globalAlpha = 0.85;
     dc.fill();
 
@@ -317,18 +350,19 @@ function drawDonut(progress) {
   dc.stroke();
 }
 
-let donutAnimated = false;
 const donutObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
-    if (entry.isIntersecting && !donutAnimated) {
-      donutAnimated = true;
-      let prog = 0;
+    if (entry.isIntersecting && !entry.target.dataset.animated) {
+      entry.target.dataset.animated = 'true';
+      const period = periodMaterialData.find(item => item.canvasId === entry.target.id);
+      if (!period) return;
+      const total = period.data.reduce((sum, item) => sum + item.count, 0);
       const dur = 1400;
       const start = performance.now();
       function anim(now) {
-        prog = Math.min((now - start) / dur, 1);
+        const prog = Math.min((now - start) / dur, 1);
         const eased = 1 - Math.pow(1 - prog, 2);
-        drawDonut(eased);
+        drawDonut(entry.target, period.data, total, eased);
         if (prog < 1) requestAnimationFrame(anim);
       }
       requestAnimationFrame(anim);
@@ -337,140 +371,13 @@ const donutObserver = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.3 });
 
-if (donutCanvas) donutObserver.observe(donutCanvas);
-
-// ── Line Chart (Material Trends) ──────────────
-const lineCanvas = document.getElementById('line-canvas');
-
-const lineData = {
-  intervals: ['1650','1660','1670','1680','1690','1700','1710','1720','1730','1740','1750','1760','1770'],
-  series: [
-    { name: 'Marble',     data: [9,  28, 31, 45, 23, 60, 19, 1,  12, 13, 23, 23, 16], color: '#e8e0d5' },
-    { name: 'Bronze',     data: [5,  2,  5,  40, 8,  9,  1,  2,  0,  3,  4,  2,  3 ], color: '#c9a96e' },
-    { name: 'Terracotta', data: [0,  3,  6,  2,  7,  5,  3,  2,  7,  8,  7,  21, 8 ], color: '#c17f5a' },
-    { name: 'Porcelain',  data: [0,  0,  0,  0,  0,  0,  0,  0,  1,  6,  5,  10, 4 ], color: '#d4e8f0' },
-    { name: 'Wood',       data: [1,  1,  0,  3,  1,  4,  0,  0,  1,  2,  3,  5,  4 ], color: '#a07850' },
-  ]
-};
-
-// Build line legend dynamically
-const lineLegendEl = document.getElementById('line-legend');
-if (lineLegendEl) {
-  lineData.series.forEach(s => {
-    const item = document.createElement('span');
-    item.className = 'obj-type-legend-item';
-    item.style.setProperty('--legend-color', s.color);
-    item.textContent = s.name;
-    lineLegendEl.appendChild(item);
-  });
-}
-
-function drawLineChart(progress) {
-  if (!lineCanvas) return;
-  const lc = lineCanvas.getContext('2d');
-  const W = lineCanvas.width, H = lineCanvas.height;
-  const pad = { top: 20, right: 20, bottom: 40, left: 50 };
-  const chartW = W - pad.left - pad.right;
-  const chartH = H - pad.top - pad.bottom;
-
-  lc.clearRect(0, 0, W, H);
-
-  const maxVal = 65;
-  const pts = lineData.intervals.length;
-  const xStep = chartW / (pts - 1);
-
-  function toX(i) { return pad.left + i * xStep; }
-  function toY(v) { return pad.top + chartH - (v / maxVal) * chartH; }
-
-  // Grid
-  lc.strokeStyle = 'rgba(201,169,110,0.07)';
-  lc.lineWidth = 1;
-  for (let v = 0; v <= maxVal; v += 13) {
-    const y = toY(v);
-    lc.beginPath(); lc.moveTo(pad.left, y); lc.lineTo(W - pad.right, y); lc.stroke();
-    lc.fillStyle = 'rgba(201,169,110,0.35)';
-    lc.font = '10px Inter, sans-serif';
-    lc.textAlign = 'right';
-    lc.fillText(v, pad.left - 6, y + 4);
-  }
-
-  // X labels
-  lc.fillStyle = 'rgba(201,169,110,0.4)';
-  lc.font = '9px Inter, sans-serif';
-  lc.textAlign = 'center';
-  lineData.intervals.forEach((d, i) => {
-    lc.fillText(d, toX(i), H - pad.bottom + 16);
-  });
-
-  const drawSeries = (data, color) => {
-    const totalPts = Math.floor(pts * progress);
-    if (totalPts < 2) return;
-
-    lc.beginPath();
-    lc.moveTo(toX(0), toY(data[0]));
-    for (let i = 1; i < totalPts; i++) {
-      const xc = (toX(i - 1) + toX(i)) / 2;
-      const yc = (toY(data[i - 1]) + toY(data[i])) / 2;
-      lc.quadraticCurveTo(toX(i - 1), toY(data[i - 1]), xc, yc);
-    }
-    lc.strokeStyle = color;
-    lc.lineWidth = 2.2;
-    lc.globalAlpha = 0.9;
-    lc.stroke();
-    lc.globalAlpha = 1;
-
-    for (let i = 0; i < totalPts; i++) {
-      lc.beginPath();
-      lc.arc(toX(i), toY(data[i]), 3, 0, Math.PI * 2);
-      lc.fillStyle = color;
-      lc.fill();
-    }
-  };
-
-  lineData.series.forEach(s => drawSeries(s.data, s.color));
-
-  // Subtle area fill under marble
-  const totalPts = Math.floor(pts * progress);
-  const marbleData = lineData.series[0].data;
-  if (totalPts >= 2) {
-    lc.beginPath();
-    lc.moveTo(toX(0), toY(marbleData[0]));
-    for (let i = 1; i < totalPts; i++) {
-      const xc = (toX(i - 1) + toX(i)) / 2;
-      const yc = (toY(marbleData[i - 1]) + toY(marbleData[i])) / 2;
-      lc.quadraticCurveTo(toX(i - 1), toY(marbleData[i - 1]), xc, yc);
-    }
-    lc.lineTo(toX(totalPts - 1), toY(0));
-    lc.lineTo(toX(0), toY(0));
-    lc.closePath();
-    const grad = lc.createLinearGradient(0, pad.top, 0, H - pad.bottom);
-    grad.addColorStop(0, 'rgba(232,224,213,0.10)');
-    grad.addColorStop(1, 'rgba(232,224,213,0)');
-    lc.fillStyle = grad;
-    lc.fill();
-  }
-}
-
-let lineAnimated = false;
-const lineObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && !lineAnimated) {
-      lineAnimated = true;
-      const dur = 1800;
-      const start = performance.now();
-      function anim(now) {
-        const prog = Math.min((now - start) / dur, 1);
-        const eased = 1 - Math.pow(1 - prog, 2);
-        drawLineChart(eased);
-        if (prog < 1) requestAnimationFrame(anim);
-      }
-      requestAnimationFrame(anim);
-      lineObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.3 });
-
-if (lineCanvas) lineObserver.observe(lineCanvas);
+periodMaterialData.forEach(period => {
+  const canvas = document.getElementById(period.canvasId);
+  const legend = document.getElementById(period.legendId);
+  const total = period.data.reduce((sum, item) => sum + item.count, 0);
+  buildMaterialLegend(legend, period.data, total);
+  if (canvas) donutObserver.observe(canvas);
+});
 
 // ── Timeline Line ─────────────────────────────
 const timelineLine = document.getElementById('timeline-line');

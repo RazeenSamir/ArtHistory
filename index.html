@@ -148,6 +148,11 @@
       <p class="section-label">— The Age of Enlightenment —</p>
       <div class="era-periods">
         <div class="era-period">
+          <span class="era-name">Pre-Enlightenment</span>
+          <span class="era-dates">1650–1685</span>
+        </div>
+        <div class="era-divider"></div>
+        <div class="era-period">
           <span class="era-name">Early Enlightenment</span>
           <span class="era-dates">1685–1730</span>
         </div>
@@ -169,8 +174,8 @@
           <span class="stat-label">Objects in Collection</span>
         </div>
         <div class="stat-card reveal-on-scroll" data-delay="200">
-          <span class="stat-num" data-count="130">0</span>
-          <span class="stat-label">Years Documented</span>
+          <span class="stat-num" data-count="125">0</span>
+          <span class="stat-label">Year Span</span>
         </div>
         <div class="stat-card reveal-on-scroll" data-delay="300">
           <span class="stat-num" data-count="6">0</span>
@@ -225,7 +230,7 @@
     <div class="gallery-header reveal-on-scroll">
       <p class="section-label">— Gallery I —</p>
       <h2 class="section-title">The Collection<br/><em>by Object Type</em></h2>
-      <p class="section-intro">468 objects classified across five primary sculptural and decorative categories. Each form carries a statement about what the Enlightenment valued.</p>
+      <p class="section-intro">468 objects organized around the five most frequent object types in the filtered Louvre sculpture dataset. Each form carries a statement about what the Enlightenment valued.</p>
     </div>
 
     <div class="object-wall">
@@ -253,14 +258,14 @@
         <div class="frame-outer">
           <div class="frame-inner">
             <div class="artwork-display">
-              <img class="artwork-image" src="images/sculpture.jpg" width="968" height="1500" alt="Sculpture artwork example" />
+              <img class="artwork-image" src="images/sculpture.jpg" width="1328" height="1774" alt="Statue priante de Louis XIII, 1715" />
             </div>
           </div>
         </div>
         <div class="artwork-bar-wrap">
           <div class="artwork-bar" data-width="86.0" style="--bar-color:#b8956a"></div>
         </div>
-        <span class="artwork-credit"><em>Statuette sur console : la Vierge debout portant l'Enfant</em>, 1700</span>
+        <span class="artwork-credit"><em>Statue priante de Louis XIII</em>, 1715</span>
         <div class="frame-label">
           <span class="label-title">Sculpture</span>
           <span class="label-definition">A life-size sculpture containing only one human or animal subject.</span>
@@ -464,7 +469,7 @@
           </div>
           <div class="step-body">
             <h4 class="step-title">Web Extraction</h4>
-            <p class="step-desc">The Louvre's sculpture collection returned around 40,000 results, which was too large for the scope of this project. The search was narrowed to works dated 1650–1775, covering the years before the Enlightenment through the height of the period.</p>
+            <p class="step-desc">The Louvre's collection contained around 40,000 sculptures, which was too large for the scope of this project. Using the filters provided on the Louvre website, we limited the search to sculptures dated 1650–1775 rather than selecting individual works by hand.</p>
           </div>
         </div>
 
@@ -476,7 +481,7 @@
           </div>
           <div class="step-body">
             <h4 class="step-title">Dataset Construction</h4>
-            <p class="step-desc">That date range narrowed the collection to 724 results. Custom scripts then extracted titles, dates, materials, object types, image references, and collection information into a structured spreadsheet.</p>
+            <p class="step-desc">The Louvre's date filter systematically narrowed the collection to 724 results spanning Pre-Enlightenment, Early Enlightenment, and Enlightenment periods. Custom scripts then extracted titles, dates, materials, Louvre object-type labels, image references, and collection information into a structured spreadsheet.</p>
           </div>
         </div>
 
@@ -488,7 +493,7 @@
           </div>
           <div class="step-body">
             <h4 class="step-title">Cleaning &amp; Focus</h4>
-            <p class="step-desc">Because our research focused specifically on sculpture, the dataset was cleaned around the two variables most relevant to our question: <em>object type</em> and <em>material</em>. The five object types came from Louvre classifications, and the final sample was filtered by metadata quality rather than hand-chosen. Entries with missing, unclear, or inconsistent information were removed or standardized, leaving 468 objects.</p>
+            <p class="step-desc">The Louvre supplied the object-type labels but did not explain how similar labels were distinguished, so we developed working definitions from its grouping patterns. We filtered the 724 results to the five most frequent types—statuette, sculpture, bust, sculpted group, and bas-relief—and retained every entry that met those criteria rather than selecting individual works. After standardizing the object-type and material metadata, the final dataset contained 468 objects.</p>
           </div>
         </div>
 
@@ -533,7 +538,7 @@
         <div class="exhibit-header-bar">
           <span class="exhibit-num">I</span>
           <span class="exhibit-title">Object Type Counts by Time Interval</span>
-          <span class="exhibit-medium">1650–1780 · Louvre Collection</span>
+          <span class="exhibit-medium">1650–1775 · Louvre Collection</span>
         </div>
         <div class="line-chart-area">
           <canvas id="obj-type-canvas" width="680" height="300"></canvas>
@@ -544,46 +549,69 @@
       <div class="exhibit-number-tag">EXH. 01</div>
     </div>
 
-    <!-- Exhibit 2: Material breakdown donut -->
-    <div class="exhibit-frame reveal-on-scroll">
+    <!-- Exhibit 2: Material distribution by Enlightenment period -->
+    <div class="exhibit-frame material-period-exhibit reveal-on-scroll">
       <div class="exhibit-glass">
         <div class="exhibit-header-bar">
           <span class="exhibit-num">II</span>
-          <span class="exhibit-title">Material Distribution</span>
-          <span class="exhibit-medium">600 Materials Recorded</span>
+          <span class="exhibit-title">Material Distribution by Period</span>
+          <span class="exhibit-medium">Three-Phase Comparison</span>
         </div>
-        <div class="donut-area">
-          <div class="donut-chart-wrap">
-            <canvas id="donut-canvas" width="260" height="260"></canvas>
-            <div class="donut-center">
-              <span class="donut-center-num">600</span>
-              <span class="donut-center-label">Materials</span>
+        <div class="period-donut-grid">
+          <section class="period-donut-panel">
+            <div class="period-donut-heading">
+              <h3>Pre-Enlightenment</h3>
+              <span>1650–1689</span>
             </div>
-          </div>
-          <div class="donut-legend" id="donut-legend">
-            <!-- Injected by JS -->
-          </div>
+            <div class="donut-area">
+              <div class="donut-chart-wrap">
+                <canvas id="pre-donut-canvas" width="260" height="260"></canvas>
+                <div class="donut-center">
+                  <span class="donut-center-num">181</span>
+                  <span class="donut-center-label">Instances</span>
+                </div>
+              </div>
+              <div class="donut-legend" id="pre-donut-legend"></div>
+            </div>
+          </section>
+
+          <section class="period-donut-panel">
+            <div class="period-donut-heading">
+              <h3>Early Enlightenment</h3>
+              <span>1690–1729</span>
+            </div>
+            <div class="donut-area">
+              <div class="donut-chart-wrap">
+                <canvas id="early-donut-canvas" width="260" height="260"></canvas>
+                <div class="donut-center">
+                  <span class="donut-center-num">145</span>
+                  <span class="donut-center-label">Instances</span>
+                </div>
+              </div>
+              <div class="donut-legend" id="early-donut-legend"></div>
+            </div>
+          </section>
+
+          <section class="period-donut-panel">
+            <div class="period-donut-heading">
+              <h3>Enlightenment</h3>
+              <span>1730–1775 available data</span>
+            </div>
+            <div class="donut-area">
+              <div class="donut-chart-wrap">
+                <canvas id="late-donut-canvas" width="260" height="260"></canvas>
+                <div class="donut-center">
+                  <span class="donut-center-num">191</span>
+                  <span class="donut-center-label">Instances</span>
+                </div>
+              </div>
+              <div class="donut-legend" id="late-donut-legend"></div>
+            </div>
+          </section>
         </div>
-        <div class="exhibit-caption">Marble's overwhelming presence (50.5%) reflects the neoclassical revival that ran alongside — and through — the Enlightenment.</div>
+        <div class="exhibit-caption">These charts reuse the five material series from the validated Excel totals. Because the existing decade data cannot be divided precisely at 1685, the 1680s remain in the baseline and the Early Enlightenment comparison begins with 1690. “Other” is excluded because no validated period-by-period series was recorded for that category.</div>
       </div>
       <div class="exhibit-number-tag">EXH. 02</div>
-    </div>
-
-    <!-- Exhibit 3: Material over time line chart -->
-    <div class="exhibit-frame reveal-on-scroll">
-      <div class="exhibit-glass">
-        <div class="exhibit-header-bar">
-          <span class="exhibit-num">III</span>
-          <span class="exhibit-title">Material Counts by Time Interval</span>
-          <span class="exhibit-medium">5 Materials · 1650–1780</span>
-        </div>
-        <div class="line-chart-area">
-          <canvas id="line-canvas" width="680" height="300"></canvas>
-        </div>
-        <div class="obj-type-legend" id="line-legend"></div>
-        <div class="exhibit-caption">Marble dominated the collection, peaking at 60 in 1700–1710, while bronze surged to 40 in 1680–1690 under Louis XIV patronage. Terracotta climbed to 21 in 1760–1770, with porcelain and wood emerging as late-Enlightenment alternatives — reflecting a broader shift in material taste and intimacy of form.</div>
-      </div>
-      <div class="exhibit-number-tag">EXH. 03</div>
     </div>
 
     <!-- Timeline scroll bar -->
@@ -592,11 +620,11 @@
         <div class="timeline-line" id="timeline-line"></div>
         <div class="timeline-markers">
           <div class="tl-mark" style="left:0%"><span class="tl-year">1650</span><span class="tl-event">Study period begins</span></div>
-          <div class="tl-mark" style="left:23%"><span class="tl-year">1680</span><span class="tl-event">Bronze peaks — Louis XIV patronage</span></div>
-          <div class="tl-mark" style="left:38%"><span class="tl-year">1700</span><span class="tl-event">Marble peaks at 60 objects</span></div>
-          <div class="tl-mark" style="left:61%"><span class="tl-year">1730</span><span class="tl-event">Rococo — porcelain &amp; decorative arts emerge</span></div>
-          <div class="tl-mark" style="left:83%"><span class="tl-year">1760</span><span class="tl-event">Terracotta peaks — intimate portraiture rises</span></div>
-          <div class="tl-mark" style="left:100%"><span class="tl-year">1780</span><span class="tl-event">End of study period</span></div>
+          <div class="tl-mark" style="left:24%"><span class="tl-year">1680</span><span class="tl-event">Bronze peaks — Louis XIV patronage</span></div>
+          <div class="tl-mark" style="left:40%"><span class="tl-year">1700</span><span class="tl-event">Marble peaks at 60 instances</span></div>
+          <div class="tl-mark" style="left:64%"><span class="tl-year">1730</span><span class="tl-event">Rococo — porcelain &amp; decorative arts emerge</span></div>
+          <div class="tl-mark" style="left:88%"><span class="tl-year">1760</span><span class="tl-event">Terracotta peaks — intimate portraiture rises</span></div>
+          <div class="tl-mark" style="left:100%"><span class="tl-year">1775</span><span class="tl-event">Study period ends</span></div>
         </div>
       </div>
     </div>
@@ -633,7 +661,7 @@
           </div>
           <p class="case-study-text">Jacques Sarazin's <em>Cénotaphe du coeur du cardinal Pierre de Bérulle</em> serves as an early baseline, showing the object and material pattern before the later eighteenth-century shift becomes more visible. Sarazin was an established French sculptor whose work often belonged to formal religious and elite settings — fitting the commemorative nature of this piece. As a marble statue, it reflects how important sculptural objects were still strongly tied to religion, authority, permanence, and public memory. The marble gives the piece cultural weight, making the memorial feel official and lasting rather than decorative or intimate. Sarazin's work anchors the earlier side of the trend, especially when contrasted with later pieces that move toward terracotta, porcelain, and smaller sculptural forms.</p>
           <div class="case-study-note">
-            <strong>Note:</strong> Since our dataset begins at 1650, this piece is treated as the early baseline rather than a true pre-transition example — it still shows the older marble/statue pattern before the later shift becomes clearer. This represents a pattern, not an obsolete practice.
+            <strong>Note:</strong> This 1653–57 work falls within the project's Pre-Enlightenment period and serves as a baseline for comparing later shifts in object type, subject matter, and material. It represents an earlier pattern, not an obsolete practice.
           </div>
         </div>
       </div>
@@ -697,20 +725,20 @@
           <div class="finding-card reveal-on-scroll" data-delay="300">
             <div class="finding-num">03</div>
             <h4>Bronze &amp; the 1680s</h4>
-            <p>Bronze surged to 40 objects in 1680–1690 — its highest point — coinciding with Louis XIV's height of power and the political commissioning of commemorative works.</p>
+            <p>Bronze surged to 40 material instances in 1680–1690 — its highest point — coinciding with Louis XIV's height of power and the political commissioning of commemorative works.</p>
           </div>
           <div class="finding-card reveal-on-scroll" data-delay="450">
             <div class="finding-num">04</div>
             <h4>Terracotta's Late Rise</h4>
-            <p>Terracotta peaked at 21 objects in 1760–1770, signaling a late-Enlightenment turn toward intimate portraiture, personal expression, and experimental form.</p>
+            <p>Terracotta peaked at 21 material instances in 1760–1770, signaling a late-Enlightenment turn toward intimate portraiture, personal expression, and experimental form.</p>
           </div>
         </div>
       </div>
 
       <div class="conclusion-footer reveal-on-scroll">
         <div class="footer-gold-line"></div>
-        <p class="footer-credit">Art History Research · Louvre Collection Data 1650–1780</p>
-        <p class="footer-credit">468 Objects · 6 Material Categories · 130 Years</p>
+        <p class="footer-credit">Art History Research · Louvre Collection Data 1650–1775</p>
+        <p class="footer-credit">468 Objects · 6 Material Categories · 125-Year Span</p>
         <div class="footer-gold-line"></div>
         <div class="footer-louvre-seal">
           <div class="seal-ring">
